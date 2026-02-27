@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="OmniRoute AI — Create and optimize delivery routes with classical and quantum solvers">
-    <title>OmniRoute AI — Route Optimizer</title>
+        content="OmniRoute AI — Account settings, appearance, notifications, and API configuration">
+    <title>OmniRoute AI — Settings</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,63 +18,7 @@
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/optimizer.css">
-
-    <style>
-        /* Toggle switch — scoped to this page */
-        .toggle {
-            position: relative;
-            display: inline-flex;
-            cursor: pointer;
-        }
-
-        .toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            position: absolute;
-        }
-
-        .toggle__slider {
-            width: 36px;
-            height: 20px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-default);
-            border-radius: var(--radius-full);
-            transition: background var(--duration-fast) var(--ease-default),
-                border-color var(--duration-fast) var(--ease-default);
-            position: relative;
-        }
-
-        .toggle__slider::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: var(--text-muted);
-            transition: transform var(--duration-fast) var(--ease-spring),
-                background var(--duration-fast) var(--ease-default);
-        }
-
-        .toggle input:checked+.toggle__slider {
-            background: var(--accent-muted);
-            border-color: var(--accent);
-        }
-
-        .toggle input:checked+.toggle__slider::after {
-            transform: translateX(16px);
-            background: var(--accent);
-        }
-
-        .toggle input:focus-visible+.toggle__slider {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/settings.css">
 </head>
 
 <body>
@@ -108,7 +52,7 @@
                         </span>
                         Dashboard
                     </a>
-                    <a class="nav-item active" href="optimizer.html">
+                    <a class="nav-item" href="optimizer.html">
                         <span class="nav-item__icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -177,7 +121,7 @@
 
                 <div class="nav-section">
                     <span class="nav-section__label">System</span>
-                    <a class="nav-item" href="settings.html">
+                    <a class="nav-item active" href="settings.html">
                         <span class="nav-item__icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -232,127 +176,103 @@
                     </svg>
                     <span class="badge"></span>
                 </button>
-                <div class="avatar" title="Satis · Admin">SA</div>
+                <div class="avatar" title="Admin">SA</div>
             </div>
         </header>
 
         <!-- ═══ Main Canvas ═══ -->
         <main class="main-canvas">
-            <div class="optimizer-layout">
+            <div class="settings-layout">
 
-                <!-- Left: Wizard Panel -->
-                <div class="wizard-panel">
-                    <div class="wizard-panel__header">
-                        <div class="wizard-panel__title">New Route</div>
-                        <div class="wizard-panel__subtitle">Create and optimize a delivery route</div>
-                    </div>
-
-                    <div class="stepper" id="stepper">
-                        <!-- Rendered by optimizer.js -->
-                    </div>
-
-                    <div class="wizard-body" id="wizard-body">
-                        <!-- Rendered by optimizer.js -->
-                    </div>
-
-                    <div class="wizard-footer" id="wizard-footer">
-                        <!-- Rendered by optimizer.js -->
-                    </div>
+                <div class="settings-header">
+                    <h1 class="settings-header__title">Settings</h1>
+                    <p class="settings-header__subtitle">Manage your account, preferences, and API configuration</p>
                 </div>
 
-                <!-- Center: Map -->
-                <div class="map-container"
-                    style="margin:0;border-radius:0;border:none;border-left:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle);">
-                    <div class="map-canvas" id="map-canvas">
-                        <div class="map-controls">
-                            <button class="map-control-btn" title="Zoom In" aria-label="Zoom In">
+                <div class="settings-grid">
+                    <!-- Left Nav -->
+                    <div>
+                        <div class="settings-nav">
+                            <div class="settings-nav__item active" data-section="profile">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2">
-                                    <path d="M5 12h14" />
-                                    <path d="M12 5v14" />
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
                                 </svg>
-                            </button>
-                            <button class="map-control-btn" title="Zoom Out" aria-label="Zoom Out">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path d="M5 12h14" />
-                                </svg>
-                            </button>
-                            <button class="map-control-btn" title="Fit Route" aria-label="Fit route to screen">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <polyline points="15 3 21 3 21 9" />
-                                    <polyline points="9 21 3 21 3 15" />
-                                    <line x1="21" y1="3" x2="14" y2="10" />
-                                    <line x1="3" y1="21" x2="10" y2="14" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="map-status">
-                            <span class="map-status__dot"></span>
-                            <span class="map-status__text"><strong>8</strong> stops plotted · Click map to add</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right: Results Panel -->
-                <div class="results-panel">
-                    <div class="results-panel__header">
-                        <div class="results-panel__status">
-                            <div class="results-panel__status-icon results-panel__status-icon--pending">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path d="M12 20V10" />
-                                    <path d="M18 20V4" />
-                                    <path d="M6 20v-4" />
-                                </svg>
+                                Profile
                             </div>
-                            <span class="results-panel__status-title">Optimization Results</span>
+                            <div class="settings-nav__item" data-section="appearance">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="5" />
+                                    <line x1="12" y1="1" x2="12" y2="3" />
+                                    <line x1="12" y1="21" x2="12" y2="23" />
+                                    <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                                    <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                                    <line x1="1" y1="12" x2="3" y2="12" />
+                                    <line x1="21" y1="12" x2="23" y2="12" />
+                                    <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                                    <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                                </svg>
+                                Appearance
+                            </div>
+                            <div class="settings-nav__item" data-section="notifications">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                                    <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                                </svg>
+                                Notifications
+                            </div>
+                            <div class="settings-nav__item" data-section="api">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="16 18 22 12 16 6" />
+                                    <polyline points="8 6 2 12 8 18" />
+                                </svg>
+                                API Configuration
+                            </div>
                         </div>
                     </div>
-                    <div class="results-body" id="results-body">
-                        <!-- Rendered by optimizer.js -->
-                    </div>
-                    <div class="results-footer">
-                        <button class="btn btn--ghost">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                <polyline points="7 10 12 15 17 10" />
-                                <line x1="12" y1="15" x2="12" y2="3" />
-                            </svg>
-                            Export
-                        </button>
-                        <button class="btn btn--ghost">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                                <polyline points="16 6 12 2 8 6" />
-                                <line x1="12" y1="2" x2="12" y2="15" />
-                            </svg>
-                            Share
-                        </button>
+
+                    <!-- Right Content -->
+                    <div>
+                        <!-- Profile -->
+                        <div class="settings-section" id="section-profile">
+                            <!-- Rendered by settings.js -->
+                        </div>
+
+                        <!-- Appearance -->
+                        <div class="settings-section" id="section-appearance" style="display:none;">
+                            <!-- Rendered by settings.js -->
+                        </div>
+
+                        <!-- Notifications -->
+                        <div class="settings-section" id="section-notifications" style="display:none;">
+                            <!-- Rendered by settings.js -->
+                        </div>
+
+                        <!-- API Config -->
+                        <div class="settings-section" id="section-api" style="display:none;">
+                            <div class="settings-section__title">API Connection</div>
+                            <div class="settings-section__desc">Configure the connection to your backend server</div>
+                            <!-- Content rendered by settings.js -->
+                        </div>
                     </div>
                 </div>
-
             </div>
         </main>
     </div>
 
     <script src="js/store.js"></script>
     <script src="js/sidebar.js"></script>
-    <script src="js/stats.js"></script>
-    <script src="js/map.js"></script>
-    <script src="js/optimizer.js"></script>
+    <script src="js/settings.js"></script>
 
     <script>
-        /* Boot optimizer page */
         document.addEventListener('DOMContentLoaded', () => {
             Sidebar.init();
-            MapRenderer.init();
-            Optimizer.init();
+            Settings.init();
 
-            /* Clock */
             const clock = document.getElementById('header-clock');
             if (clock) {
                 const now = new Date();

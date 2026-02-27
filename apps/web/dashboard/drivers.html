@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description"
-        content="OmniRoute AI — Create and optimize delivery routes with classical and quantum solvers">
-    <title>OmniRoute AI — Route Optimizer</title>
+    <meta name="description" content="OmniRoute AI — Fleet Management">
+    <title>OmniRoute AI — Drivers</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,63 +17,7 @@
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link rel="stylesheet" href="css/optimizer.css">
-
-    <style>
-        /* Toggle switch — scoped to this page */
-        .toggle {
-            position: relative;
-            display: inline-flex;
-            cursor: pointer;
-        }
-
-        .toggle input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-            position: absolute;
-        }
-
-        .toggle__slider {
-            width: 36px;
-            height: 20px;
-            background: var(--bg-primary);
-            border: 1px solid var(--border-default);
-            border-radius: var(--radius-full);
-            transition: background var(--duration-fast) var(--ease-default),
-                border-color var(--duration-fast) var(--ease-default);
-            position: relative;
-        }
-
-        .toggle__slider::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 14px;
-            height: 14px;
-            border-radius: 50%;
-            background: var(--text-muted);
-            transition: transform var(--duration-fast) var(--ease-spring),
-                background var(--duration-fast) var(--ease-default);
-        }
-
-        .toggle input:checked+.toggle__slider {
-            background: var(--accent-muted);
-            border-color: var(--accent);
-        }
-
-        .toggle input:checked+.toggle__slider::after {
-            transform: translateX(16px);
-            background: var(--accent);
-        }
-
-        .toggle input:focus-visible+.toggle__slider {
-            outline: 2px solid var(--accent);
-            outline-offset: 2px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/drivers.css">
 </head>
 
 <body>
@@ -108,7 +51,7 @@
                         </span>
                         Dashboard
                     </a>
-                    <a class="nav-item active" href="optimizer.html">
+                    <a class="nav-item" href="optimizer.html">
                         <span class="nav-item__icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -138,7 +81,8 @@
                         </span>
                         Vehicles
                     </a>
-                    <a class="nav-item" href="drivers.html">
+
+                    <a class="nav-item active" href="drivers.html">
                         <span class="nav-item__icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -238,126 +182,64 @@
 
         <!-- ═══ Main Canvas ═══ -->
         <main class="main-canvas">
-            <div class="optimizer-layout">
+            <div style="padding: var(--space-5); max-width: 1400px; margin: 0 auto;">
 
-                <!-- Left: Wizard Panel -->
-                <div class="wizard-panel">
-                    <div class="wizard-panel__header">
-                        <div class="wizard-panel__title">New Route</div>
-                        <div class="wizard-panel__subtitle">Create and optimize a delivery route</div>
-                    </div>
-
-                    <div class="stepper" id="stepper">
-                        <!-- Rendered by optimizer.js -->
-                    </div>
-
-                    <div class="wizard-body" id="wizard-body">
-                        <!-- Rendered by optimizer.js -->
-                    </div>
-
-                    <div class="wizard-footer" id="wizard-footer">
-                        <!-- Rendered by optimizer.js -->
-                    </div>
-                </div>
-
-                <!-- Center: Map -->
-                <div class="map-container"
-                    style="margin:0;border-radius:0;border:none;border-left:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle);">
-                    <div class="map-canvas" id="map-canvas">
-                        <div class="map-controls">
-                            <button class="map-control-btn" title="Zoom In" aria-label="Zoom In">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path d="M5 12h14" />
-                                    <path d="M12 5v14" />
-                                </svg>
-                            </button>
-                            <button class="map-control-btn" title="Zoom Out" aria-label="Zoom Out">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path d="M5 12h14" />
-                                </svg>
-                            </button>
-                            <button class="map-control-btn" title="Fit Route" aria-label="Fit route to screen">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <polyline points="15 3 21 3 21 9" />
-                                    <polyline points="9 21 3 21 3 15" />
-                                    <line x1="21" y1="3" x2="14" y2="10" />
-                                    <line x1="3" y1="21" x2="10" y2="14" />
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="map-status">
-                            <span class="map-status__dot"></span>
-                            <span class="map-status__text"><strong>8</strong> stops plotted · Click map to add</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right: Results Panel -->
-                <div class="results-panel">
-                    <div class="results-panel__header">
-                        <div class="results-panel__status">
-                            <div class="results-panel__status-icon results-panel__status-icon--pending">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2">
-                                    <path d="M12 20V10" />
-                                    <path d="M18 20V4" />
-                                    <path d="M6 20v-4" />
-                                </svg>
-                            </div>
-                            <span class="results-panel__status-title">Optimization Results</span>
-                        </div>
-                    </div>
-                    <div class="results-body" id="results-body">
-                        <!-- Rendered by optimizer.js -->
-                    </div>
-                    <div class="results-footer">
-                        <button class="btn btn--ghost">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                <polyline points="7 10 12 15 17 10" />
-                                <line x1="12" y1="15" x2="12" y2="3" />
-                            </svg>
-                            Export
+                <div class="fleet-toolbar">
+                    <div class="fleet-filters">
+                        <button class="filter-btn active" data-filter="all">
+                            All Drivers
+                            <span class="filter-btn__count">0</span>
                         </button>
-                        <button class="btn btn--ghost">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
-                                <polyline points="16 6 12 2 8 6" />
-                                <line x1="12" y1="2" x2="12" y2="15" />
-                            </svg>
-                            Share
+                        <button class="filter-btn" data-filter="driving">
+                            Driving
+                            <span class="filter-btn__count">0</span>
+                        </button>
+                        <button class="filter-btn" data-filter="on-break">
+                            On Break
+                            <span class="filter-btn__count">0</span>
+                        </button>
+                        <button class="filter-btn" data-filter="off-duty">
+                            Off Duty
+                            <span class="filter-btn__count">0</span>
                         </button>
                     </div>
+
+                    <button class="btn btn--primary" id="btn-assign-driver">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        Assign Driver
+                    </button>
+                </div>
+
+                <div class="drivers-grid" id="drivers-grid">
+                    <!-- Rendered by drivers.js -->
                 </div>
 
             </div>
         </main>
     </div>
 
+    <!-- Scripts -->
     <script src="js/store.js"></script>
     <script src="js/sidebar.js"></script>
-    <script src="js/stats.js"></script>
-    <script src="js/map.js"></script>
-    <script src="js/optimizer.js"></script>
-
     <script>
-        /* Boot optimizer page */
         document.addEventListener('DOMContentLoaded', () => {
             Sidebar.init();
-            MapRenderer.init();
-            Optimizer.init();
 
-            /* Clock */
             const clock = document.getElementById('header-clock');
             if (clock) {
                 const now = new Date();
                 clock.textContent = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
             }
+        });
+    </script>
+    <script src="js/drivers.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            Drivers.init();
         });
     </script>
 </body>

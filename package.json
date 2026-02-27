@@ -1,0 +1,16 @@
+{
+    "name": "omniroute",
+    "version": "1.0.0",
+    "description": "OmniRoute AI Monorepo",
+    "private": true,
+    "scripts": {
+        "build": "turbo run build",
+        "dev": "turbo run dev",
+        "lint": "turbo run lint",
+        "test": "turbo run test"
+    },
+    "packageManager": "pnpm@9.x",
+    "dependencies": {
+        "turbo": "^2.0.0"
+    }
+}

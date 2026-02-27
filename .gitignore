@@ -1,0 +1,44 @@
+# ── Dependencies ──
+node_modules/
+__pycache__/
+*.pyc
+.pyo
+*.egg-info/
+dist/
+build/
+
+# ── Environment ──
+.env
+.env.local
+.env.production
+
+# ── IDE ──
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── OS ──
+.DS_Store
+Thumbs.db
+
+# ── Python ──
+*.egg
+*.whl
+venv/
+.venv/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+
+# ── Node ──
+.turbo/
+.next/
+.nuxt/
+
+# ── Docker ──
+docker-compose.override.yml
+
+# ── Logs ──
+*.log
+logs/

@@ -51,6 +51,25 @@ const Store = (() => {
         vehicles: [],
     };
 
+    /* ─────────────────────────────────────────
+       DRIVERS DATA
+       ───────────────────────────────────────── */
+    const drivers = {
+        /* Array of:
+           { id, name, status, vehicleId, rating, phone }
+           status: 'Driving', 'On Break', 'Off Duty'
+         */
+        list: [],
+    };
+
+    /* ─────────────────────────────────────────
+       TRACKING DATA
+       ───────────────────────────────────────── */
+    const tracking = {
+        activeVehicleId: null,
+        history: [], /* Array of { timestamp, lat, lng } */
+    };
+
 
     /* ─────────────────────────────────────────
        ANALYTICS DATA
@@ -120,6 +139,17 @@ const Store = (() => {
         return fleet;
     }
 
+    async function fetchDrivers() {
+        /* TODO: Replace with → fetch('/api/v1/drivers') */
+        return drivers;
+    }
+
+    async function fetchTracking(vehicleId) {
+        /* TODO: Replace with → fetch('/api/v1/tracking/' + vehicleId) */
+        if (vehicleId) tracking.activeVehicleId = vehicleId;
+        return tracking;
+    }
+
     async function fetchAnalytics(/* range = '7d' */) {
         /* TODO: Replace with → fetch(`/api/v1/analytics?range=${range}`) */
         return analytics;
@@ -167,12 +197,16 @@ const Store = (() => {
         /* Data access (read-only references) */
         dashboard,
         fleet,
+        drivers,
+        tracking,
         analytics,
         optimizer,
 
         /* Async fetchers */
         fetchDashboard,
         fetchFleet,
+        fetchDrivers,
+        fetchTracking,
         fetchAnalytics,
         fetchOptimizer,
 

@@ -1,0 +1,249 @@
+/* ============================================
+   OmniRoute AI — Settings Page Styles
+   Profile, preferences, API config.
+   ============================================ */
+
+/* ── Settings Layout ── */
+.settings-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    padding: var(--space-5);
+    gap: var(--space-5);
+}
+
+.settings-header__title {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+}
+
+.settings-header__subtitle {
+    font-size: var(--text-sm);
+    color: var(--text-muted);
+}
+
+/* ── Settings Grid ── */
+.settings-grid {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: var(--space-5);
+}
+
+/* ── Settings Nav ── */
+.settings-nav {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+}
+
+.settings-nav__item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-muted);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-default);
+}
+
+.settings-nav__item:hover {
+    color: var(--text-secondary);
+    background: var(--bg-surface);
+}
+
+.settings-nav__item.active {
+    color: var(--text-primary);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+}
+
+.settings-nav__item svg {
+    flex-shrink: 0;
+}
+
+/* ── Section Card ── */
+.settings-section {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius);
+    padding: var(--space-5);
+    margin-bottom: var(--space-4);
+}
+
+.settings-section__title {
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-1);
+}
+
+.settings-section__desc {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+    margin-bottom: var(--space-5);
+}
+
+/* ── Form Fields ── */
+.settings-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-bottom: var(--space-4);
+}
+
+.settings-field:last-child {
+    margin-bottom: 0;
+}
+
+.settings-field__label {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-secondary);
+}
+
+.settings-field__hint {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+}
+
+.settings-input {
+    padding: var(--space-2) var(--space-3);
+    background: var(--bg-primary);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-sm);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    transition: border-color var(--duration-fast) var(--ease-default);
+}
+
+.settings-input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-muted);
+}
+
+.settings-input--mono {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+}
+
+.settings-input[readonly] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* ── Row Layout ── */
+.settings-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.settings-row:last-child {
+    border-bottom: none;
+}
+
+.settings-row__left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.settings-row__label {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-primary);
+}
+
+.settings-row__desc {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+}
+
+/* ── Profile Avatar ── */
+.profile-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-full);
+    background: var(--accent-muted);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+    font-family: var(--font-mono);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-5);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.profile-header__info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.profile-header__name {
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+    color: var(--text-primary);
+}
+
+.profile-header__role {
+    font-size: var(--text-xs);
+    color: var(--text-muted);
+}
+
+/* ── Connection Status ── */
+.connection-status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-medium);
+}
+
+.connection-status--disconnected {
+    background: var(--color-error-muted);
+    color: var(--color-error);
+}
+
+.connection-status--connected {
+    background: var(--color-success-muted);
+    color: var(--color-success);
+}
+
+.connection-status__dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+/* ── Save bar ── */
+.settings-save-bar {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border-subtle);
+    margin-top: var(--space-4);
+}
