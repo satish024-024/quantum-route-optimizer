@@ -1,0 +1,227 @@
+/* ============================================
+   OmniRoute AI — Animations
+   All keyframes and transition classes.
+   ============================================ */
+
+/* ── Keyframes ── */
+@keyframes pulse-dot {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+@keyframes marker-ping {
+    0% {
+        transform: scale(1);
+        opacity: 0.6;
+    }
+
+    100% {
+        transform: scale(2.2);
+        opacity: 0;
+    }
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in-down {
+    from {
+        opacity: 0;
+        transform: translateY(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slide-in-left {
+    from {
+        opacity: 0;
+        transform: translateX(-16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes slide-in-right {
+    from {
+        opacity: 0;
+        transform: translateX(16px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.92);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes count-up-glow {
+    0% {
+        text-shadow: none;
+    }
+
+    50% {
+        text-shadow: 0 0 12px var(--accent-glow);
+    }
+
+    100% {
+        text-shadow: none;
+    }
+}
+
+@keyframes route-dash {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes vehicle-move {
+    0% {
+        offset-distance: 0%;
+    }
+
+    100% {
+        offset-distance: 100%;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@keyframes grid-flash {
+
+    0%,
+    100% {
+        opacity: 0.03;
+    }
+
+    50% {
+        opacity: 0.06;
+    }
+}
+
+/* ── Animation Classes ── */
+.animate-fade-in {
+    animation: fade-in var(--duration-normal) var(--ease-default) forwards;
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up var(--duration-slow) var(--ease-out) forwards;
+}
+
+.animate-slide-in-left {
+    animation: slide-in-left var(--duration-slow) var(--ease-out) forwards;
+}
+
+.animate-slide-in-right {
+    animation: slide-in-right var(--duration-slow) var(--ease-out) forwards;
+}
+
+.animate-scale-in {
+    animation: scale-in var(--duration-slow) var(--ease-spring) forwards;
+}
+
+/* ── Stagger Utilities ── */
+.stagger-1 {
+    animation-delay: 60ms;
+}
+
+.stagger-2 {
+    animation-delay: 120ms;
+}
+
+.stagger-3 {
+    animation-delay: 180ms;
+}
+
+.stagger-4 {
+    animation-delay: 240ms;
+}
+
+.stagger-5 {
+    animation-delay: 300ms;
+}
+
+.stagger-6 {
+    animation-delay: 360ms;
+}
+
+/* ── Route Path Animations ── */
+.route-path {
+    stroke-dasharray: 8 4;
+    animation: route-dash 30s linear infinite;
+}
+
+.route-path--active {
+    filter: drop-shadow(0 0 4px var(--accent-glow));
+}
+
+/* ── Loading Skeleton ── */
+.skeleton {
+    background: linear-gradient(90deg,
+            var(--bg-surface) 25%,
+            var(--bg-surface-hover) 50%,
+            var(--bg-surface) 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s var(--ease-default) infinite;
+    border-radius: var(--radius-sm);
+}
+
+/* ── Grid Background for Map ── */
+.grid-bg {
+    background-image:
+        linear-gradient(rgba(37, 99, 235, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(37, 99, 235, 0.04) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: grid-flash 4s var(--ease-default) infinite;
+}
