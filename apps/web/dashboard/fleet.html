@@ -4,22 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="OmniRoute AI — Hybrid Quantum-Classical Route Optimization Command Center">
-    <title>OmniRoute AI — Logistics Command Center</title>
+    <meta name="description" content="OmniRoute AI — Fleet management, vehicle tracking, and driver assignment">
+    <title>OmniRoute AI — Fleet Management</title>
 
-    <!-- Google Fonts: Inter + JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
         rel="stylesheet">
 
-    <!-- Stylesheets (order matters) -->
     <link rel="stylesheet" href="css/tokens.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components.css">
-    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/fleet.css">
 </head>
 
 <body>
@@ -39,10 +37,9 @@
             </div>
 
             <nav class="sidebar-nav">
-                <!-- Main Navigation -->
                 <div class="nav-section">
                     <span class="nav-section__label">Overview</span>
-                    <a class="nav-item active" href="index.html">
+                    <a class="nav-item" href="index.html">
                         <span class="nav-item__icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -70,7 +67,7 @@
 
                 <div class="nav-section">
                     <span class="nav-section__label">Fleet</span>
-                    <a class="nav-item" href="fleet.html">
+                    <a class="nav-item active" href="fleet.html">
                         <span class="nav-item__icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -107,7 +104,6 @@
                             </svg>
                         </span>
                         Live Tracking
-                        <span class="nav-item__badge" style="background:var(--color-success)">3</span>
                     </a>
                     <a class="nav-item" href="analytics.html">
                         <span class="nav-item__icon">
@@ -119,31 +115,6 @@
                             </svg>
                         </span>
                         Analytics
-                    </a>
-                    <a class="nav-item" href="#">
-                        <span class="nav-item__icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10" />
-                                <polyline points="12 6 12 12 16 14" />
-                            </svg>
-                        </span>
-                        History
-                    </a>
-                </div>
-
-                <div class="nav-section">
-                    <span class="nav-section__label">System</span>
-                    <a class="nav-item" href="#">
-                        <span class="nav-item__icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path
-                                    d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-                                <circle cx="12" cy="12" r="3" />
-                            </svg>
-                        </span>
-                        Settings
                     </a>
                 </div>
             </nav>
@@ -169,7 +140,6 @@
                     <span class="mode-badge__dot"></span>
                     Logistics Mode
                 </div>
-
                 <div class="search-bar">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -180,18 +150,8 @@
                     <span class="search-bar__shortcut">⌘K</span>
                 </div>
             </div>
-
             <div class="header-right">
                 <span class="text-xs font-mono text-muted" id="header-clock">--:--</span>
-
-                <button class="header-icon-btn" title="Optimize New Route" aria-label="Create Route">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12h14" />
-                        <path d="M12 5v14" />
-                    </svg>
-                </button>
-
                 <button class="header-icon-btn" title="Notifications" aria-label="Notifications">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -200,105 +160,144 @@
                     </svg>
                     <span class="badge"></span>
                 </button>
-
                 <div class="avatar" title="Satis · Admin">SA</div>
             </div>
         </header>
 
         <!-- ═══ Main Canvas ═══ -->
         <main class="main-canvas">
+            <div class="fleet-layout">
 
-            <!-- Stats Row -->
-            <div class="stats-row" id="stats-row">
-                <!-- Rendered by stats.js -->
-            </div>
-
-            <!-- Map -->
-            <div class="map-container">
-                <div class="map-canvas" id="map-canvas">
-
-                    <!-- Activity Feed Overlay -->
-                    <div class="activity-feed" id="activity-feed">
-                        <div class="activity-feed__card">
-                            <div class="activity-feed__header">
-                                <span class="activity-feed__title">Live Activity</span>
-                                <span class="text-xs text-muted font-mono">5 events</span>
-                            </div>
-                            <div class="activity-feed__list">
-                                <!-- Rendered by map.js -->
-                            </div>
-                        </div>
+                <!-- Fleet Header -->
+                <div class="fleet-header">
+                    <div class="fleet-header__left">
+                        <h1 class="fleet-header__title">Fleet Management</h1>
+                        <p class="fleet-header__subtitle">Manage vehicles, track maintenance, and assign drivers</p>
                     </div>
-
-                    <!-- Map Controls -->
-                    <div class="map-controls">
-                        <button class="map-control-btn" title="Zoom In" aria-label="Zoom In">
+                    <div class="fleet-header__actions">
+                        <button class="btn btn--ghost">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
+                            Export CSV
+                        </button>
+                        <button class="btn btn--primary">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
                                 <path d="M5 12h14" />
                                 <path d="M12 5v14" />
                             </svg>
+                            Add Vehicle
                         </button>
-                        <button class="map-control-btn" title="Zoom Out" aria-label="Zoom Out">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M5 12h14" />
-                            </svg>
-                        </button>
-                        <button class="map-control-btn" title="Fullscreen" aria-label="Fullscreen">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="15 3 21 3 21 9" />
-                                <polyline points="9 21 3 21 3 15" />
-                                <line x1="21" y1="3" x2="14" y2="10" />
-                                <line x1="3" y1="21" x2="10" y2="14" />
-                            </svg>
-                        </button>
-                        <button class="map-control-btn" title="Satellite View" aria-label="Toggle Map Style">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <!-- Map Status -->
-                    <div class="map-status">
-                        <span class="map-status__dot"></span>
-                        <span class="map-status__text"><strong>3</strong> vehicles tracked · Last update
-                            <strong>2s</strong> ago</span>
-                    </div>
-
-                    <!-- Map Legend -->
-                    <div class="map-legend">
-                        <div class="map-legend__title">Routes</div>
-                        <div class="map-legend__items">
-                            <div class="map-legend__item">
-                                <span class="map-legend__color" style="background:#2563EB"></span>
-                                Route Alpha (8 stops)
-                            </div>
-                            <div class="map-legend__item">
-                                <span class="map-legend__color" style="background:#8B5CF6"></span>
-                                Route Beta (6 stops)
-                            </div>
-                            <div class="map-legend__item">
-                                <span class="map-legend__color" style="background:#22C55E"></span>
-                                Route Gamma (9 stops)
-                            </div>
-                        </div>
                     </div>
                 </div>
+
+                <!-- Summary Cards -->
+                <div class="fleet-summary" id="fleet-summary">
+                    <!-- Rendered by fleet.js -->
+                </div>
+
+                <!-- Toolbar -->
+                <div class="fleet-toolbar">
+                    <div class="fleet-search">
+                        <span class="fleet-search__icon">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="m21 21-4.3-4.3" />
+                            </svg>
+                        </span>
+                        <input type="text" id="fleet-search-input" placeholder="Search vehicles, drivers, plates..."
+                            aria-label="Search fleet">
+                    </div>
+
+                    <div class="fleet-filters">
+                        <button class="fleet-filter active" data-filter="all">All <span
+                                class="fleet-filter__count">0</span></button>
+                        <button class="fleet-filter" data-filter="active">Active <span
+                                class="fleet-filter__count">0</span></button>
+                        <button class="fleet-filter" data-filter="idle">Idle <span
+                                class="fleet-filter__count">0</span></button>
+                        <button class="fleet-filter" data-filter="maintenance">Maintenance <span
+                                class="fleet-filter__count">0</span></button>
+                        <button class="fleet-filter" data-filter="offline">Offline <span
+                                class="fleet-filter__count">0</span></button>
+                    </div>
+                </div>
+
+                <!-- Table -->
+                <div class="fleet-table-wrap">
+                    <table class="fleet-table">
+                        <thead>
+                            <tr>
+                                <th data-sort="id" class="sorted" onclick="Fleet.sortBy('id')">Vehicle <span
+                                        class="sort-icon">↑</span></th>
+                                <th data-sort="plate" onclick="Fleet.sortBy('plate')">Plate <span
+                                        class="sort-icon">↑</span></th>
+                                <th data-sort="driver" onclick="Fleet.sortBy('driver')">Driver <span
+                                        class="sort-icon">↑</span></th>
+                                <th data-sort="status" onclick="Fleet.sortBy('status')">Status <span
+                                        class="sort-icon">↑</span></th>
+                                <th data-sort="fuel" onclick="Fleet.sortBy('fuel')">Fuel <span
+                                        class="sort-icon">↑</span></th>
+                                <th data-sort="mileage" onclick="Fleet.sortBy('mileage')">Mileage <span
+                                        class="sort-icon">↑</span></th>
+                                <th data-sort="route" onclick="Fleet.sortBy('route')">Route <span
+                                        class="sort-icon">↑</span></th>
+                                <th>Last Seen</th>
+                                <th style="width:100px;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fleet-tbody">
+                            <!-- Rendered by fleet.js -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="fleet-pagination">
+                    <span class="fleet-pagination__info" id="fleet-info">Showing 10 of 10 vehicles</span>
+                    <div class="fleet-pagination__controls">
+                        <button class="fleet-pagination__btn" disabled aria-label="Previous page">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M15 18l-6-6 6-6" />
+                            </svg>
+                        </button>
+                        <button class="fleet-pagination__btn active">1</button>
+                        <button class="fleet-pagination__btn" aria-label="Next page">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M9 18l6-6-6-6" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
 
-    <!-- Scripts (order matters: modules first, then entry point) -->
     <script src="js/store.js"></script>
     <script src="js/sidebar.js"></script>
-    <script src="js/stats.js"></script>
-    <script src="js/map.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/fleet.js"></script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            Sidebar.init();
+            Fleet.init();
+
+            /* Clock */
+            const clock = document.getElementById('header-clock');
+            if (clock) {
+                const now = new Date();
+                clock.textContent = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            }
+        });
+    </script>
 </body>
 
 </html>
