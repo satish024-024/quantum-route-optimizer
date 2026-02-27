@@ -4,22 +4,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="OmniRoute AI — Hybrid Quantum-Classical Route Optimization Command Center">
-    <title>OmniRoute AI — Logistics Command Center</title>
+    <meta name="description"
+        content="OmniRoute AI — Create and optimize delivery routes with classical and quantum solvers">
+    <title>OmniRoute AI — Route Optimizer</title>
 
-    <!-- Google Fonts: Inter + JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
         rel="stylesheet">
 
-    <!-- Stylesheets (order matters) -->
     <link rel="stylesheet" href="css/tokens.css">
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/layout.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/optimizer.css">
+
+    <style>
+        /* Toggle switch — scoped to this page */
+        .toggle {
+            position: relative;
+            display: inline-flex;
+            cursor: pointer;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+
+        .toggle__slider {
+            width: 36px;
+            height: 20px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-full);
+            transition: background var(--duration-fast) var(--ease-default),
+                border-color var(--duration-fast) var(--ease-default);
+            position: relative;
+        }
+
+        .toggle__slider::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--text-muted);
+            transition: transform var(--duration-fast) var(--ease-spring),
+                background var(--duration-fast) var(--ease-default);
+        }
+
+        .toggle input:checked+.toggle__slider {
+            background: var(--accent-muted);
+            border-color: var(--accent);
+        }
+
+        .toggle input:checked+.toggle__slider::after {
+            transform: translateX(16px);
+            background: var(--accent);
+        }
+
+        .toggle input:focus-visible+.toggle__slider {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+    </style>
 </head>
 
 <body>
@@ -39,10 +94,9 @@
             </div>
 
             <nav class="sidebar-nav">
-                <!-- Main Navigation -->
                 <div class="nav-section">
                     <span class="nav-section__label">Overview</span>
-                    <a class="nav-item active" href="index.html">
+                    <a class="nav-item" href="index.html">
                         <span class="nav-item__icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -54,7 +108,7 @@
                         </span>
                         Dashboard
                     </a>
-                    <a class="nav-item" href="optimizer.html">
+                    <a class="nav-item active" href="optimizer.html">
                         <span class="nav-item__icon">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -107,7 +161,6 @@
                             </svg>
                         </span>
                         Live Tracking
-                        <span class="nav-item__badge" style="background:var(--color-success)">3</span>
                     </div>
                     <div class="nav-item">
                         <span class="nav-item__icon">
@@ -119,31 +172,6 @@
                             </svg>
                         </span>
                         Analytics
-                    </div>
-                    <div class="nav-item">
-                        <span class="nav-item__icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <circle cx="12" cy="12" r="10" />
-                                <polyline points="12 6 12 12 16 14" />
-                            </svg>
-                        </span>
-                        History
-                    </div>
-                </div>
-
-                <div class="nav-section">
-                    <span class="nav-section__label">System</span>
-                    <div class="nav-item">
-                        <span class="nav-item__icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path
-                                    d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
-                                <circle cx="12" cy="12" r="3" />
-                            </svg>
-                        </span>
-                        Settings
                     </div>
                 </div>
             </nav>
@@ -169,7 +197,6 @@
                     <span class="mode-badge__dot"></span>
                     Logistics Mode
                 </div>
-
                 <div class="search-bar">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)"
                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -180,18 +207,8 @@
                     <span class="search-bar__shortcut">⌘K</span>
                 </div>
             </div>
-
             <div class="header-right">
                 <span class="text-xs font-mono text-muted" id="header-clock">--:--</span>
-
-                <button class="header-icon-btn" title="Optimize New Route" aria-label="Create Route">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M5 12h14" />
-                        <path d="M12 5v14" />
-                    </svg>
-                </button>
-
                 <button class="header-icon-btn" title="Notifications" aria-label="Notifications">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -200,104 +217,133 @@
                     </svg>
                     <span class="badge"></span>
                 </button>
-
                 <div class="avatar" title="Satis · Admin">SA</div>
             </div>
         </header>
 
         <!-- ═══ Main Canvas ═══ -->
         <main class="main-canvas">
+            <div class="optimizer-layout">
 
-            <!-- Stats Row -->
-            <div class="stats-row" id="stats-row">
-                <!-- Rendered by stats.js -->
-            </div>
+                <!-- Left: Wizard Panel -->
+                <div class="wizard-panel">
+                    <div class="wizard-panel__header">
+                        <div class="wizard-panel__title">New Route</div>
+                        <div class="wizard-panel__subtitle">Create and optimize a delivery route</div>
+                    </div>
 
-            <!-- Map -->
-            <div class="map-container">
-                <div class="map-canvas" id="map-canvas">
+                    <div class="stepper" id="stepper">
+                        <!-- Rendered by optimizer.js -->
+                    </div>
 
-                    <!-- Activity Feed Overlay -->
-                    <div class="activity-feed" id="activity-feed">
-                        <div class="activity-feed__card">
-                            <div class="activity-feed__header">
-                                <span class="activity-feed__title">Live Activity</span>
-                                <span class="text-xs text-muted font-mono">5 events</span>
-                            </div>
-                            <div class="activity-feed__list">
-                                <!-- Rendered by map.js -->
-                            </div>
+                    <div class="wizard-body" id="wizard-body">
+                        <!-- Rendered by optimizer.js -->
+                    </div>
+
+                    <div class="wizard-footer" id="wizard-footer">
+                        <!-- Rendered by optimizer.js -->
+                    </div>
+                </div>
+
+                <!-- Center: Map -->
+                <div class="map-container"
+                    style="margin:0;border-radius:0;border:none;border-left:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle);">
+                    <div class="map-canvas" id="map-canvas">
+                        <div class="map-controls">
+                            <button class="map-control-btn" title="Zoom In" aria-label="Zoom In">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14" />
+                                    <path d="M12 5v14" />
+                                </svg>
+                            </button>
+                            <button class="map-control-btn" title="Zoom Out" aria-label="Zoom Out">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14" />
+                                </svg>
+                            </button>
+                            <button class="map-control-btn" title="Fit Route" aria-label="Fit route to screen">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <polyline points="15 3 21 3 21 9" />
+                                    <polyline points="9 21 3 21 3 15" />
+                                    <line x1="21" y1="3" x2="14" y2="10" />
+                                    <line x1="3" y1="21" x2="10" y2="14" />
+                                </svg>
+                            </button>
                         </div>
-                    </div>
-
-                    <!-- Map Controls -->
-                    <div class="map-controls">
-                        <button class="map-control-btn" title="Zoom In" aria-label="Zoom In">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M5 12h14" />
-                                <path d="M12 5v14" />
-                            </svg>
-                        </button>
-                        <button class="map-control-btn" title="Zoom Out" aria-label="Zoom Out">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M5 12h14" />
-                            </svg>
-                        </button>
-                        <button class="map-control-btn" title="Fullscreen" aria-label="Fullscreen">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <polyline points="15 3 21 3 21 9" />
-                                <polyline points="9 21 3 21 3 15" />
-                                <line x1="21" y1="3" x2="14" y2="10" />
-                                <line x1="3" y1="21" x2="10" y2="14" />
-                            </svg>
-                        </button>
-                        <button class="map-control-btn" title="Satellite View" aria-label="Toggle Map Style">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <!-- Map Status -->
-                    <div class="map-status">
-                        <span class="map-status__dot"></span>
-                        <span class="map-status__text"><strong>3</strong> vehicles tracked · Last update
-                            <strong>2s</strong> ago</span>
-                    </div>
-
-                    <!-- Map Legend -->
-                    <div class="map-legend">
-                        <div class="map-legend__title">Routes</div>
-                        <div class="map-legend__items">
-                            <div class="map-legend__item">
-                                <span class="map-legend__color" style="background:#2563EB"></span>
-                                Route Alpha (8 stops)
-                            </div>
-                            <div class="map-legend__item">
-                                <span class="map-legend__color" style="background:#8B5CF6"></span>
-                                Route Beta (6 stops)
-                            </div>
-                            <div class="map-legend__item">
-                                <span class="map-legend__color" style="background:#22C55E"></span>
-                                Route Gamma (9 stops)
-                            </div>
+                        <div class="map-status">
+                            <span class="map-status__dot"></span>
+                            <span class="map-status__text"><strong>8</strong> stops plotted · Click map to add</span>
                         </div>
                     </div>
                 </div>
+
+                <!-- Right: Results Panel -->
+                <div class="results-panel">
+                    <div class="results-panel__header">
+                        <div class="results-panel__status">
+                            <div class="results-panel__status-icon results-panel__status-icon--pending">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M12 20V10" />
+                                    <path d="M18 20V4" />
+                                    <path d="M6 20v-4" />
+                                </svg>
+                            </div>
+                            <span class="results-panel__status-title">Optimization Results</span>
+                        </div>
+                    </div>
+                    <div class="results-body" id="results-body">
+                        <!-- Rendered by optimizer.js -->
+                    </div>
+                    <div class="results-footer">
+                        <button class="btn btn--ghost">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
+                            Export
+                        </button>
+                        <button class="btn btn--ghost">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+                                <polyline points="16 6 12 2 8 6" />
+                                <line x1="12" y1="2" x2="12" y2="15" />
+                            </svg>
+                            Share
+                        </button>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
 
-    <!-- Scripts (order matters: modules first, then entry point) -->
     <script src="js/sidebar.js"></script>
     <script src="js/stats.js"></script>
     <script src="js/map.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/optimizer.js"></script>
 
+    <script>
+        /* Boot optimizer page */
+        document.addEventListener('DOMContentLoaded', () => {
+            Sidebar.init();
+            MapRenderer.init();
+            Optimizer.init();
+
+            /* Clock */
+            const clock = document.getElementById('header-clock');
+            if (clock) {
+                const now = new Date();
+                clock.textContent = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+            }
+        });
+    </script>
 </body>
 
 </html>
