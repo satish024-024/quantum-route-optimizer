@@ -9,7 +9,7 @@
         "lint": "turbo run lint",
         "test": "turbo run test"
     },
-    "packageManager": "pnpm@9.x",
+    "packageManager": "pnpm@9.15.4",
     "dependencies": {
         "turbo": "^2.0.0"
     }

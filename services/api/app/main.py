@@ -16,6 +16,7 @@ from app.api.health import router as health_router
 from app.api.v1.auth import router as auth_router
 from app.api.v1.vehicles import router as vehicles_router
 from app.api.v1.routes import router as routes_router
+from app.api.v1.optimize import router as optimize_router
 
 
 @asynccontextmanager
@@ -54,6 +55,7 @@ def create_app() -> FastAPI:
     app.include_router(auth_router, prefix="/api/v1/auth", tags=["Auth"])
     app.include_router(vehicles_router, prefix="/api/v1/vehicles", tags=["Vehicles"])
     app.include_router(routes_router, prefix="/api/v1/routes", tags=["Routes"])
+    app.include_router(optimize_router, prefix="/api/v1/optimize", tags=["Optimize"])
 
     return app
 
