@@ -23,8 +23,8 @@ const Tracking = (() => {
         };
 
         /* Attempt to boot map Engine if it exists */
-        if (typeof MapEngine !== 'undefined' && els.mapCanvas) {
-            MapEngine.init(els.mapCanvas.id);
+        if (typeof MapRenderer !== 'undefined' && els.mapCanvas) {
+            MapRenderer.init(els.mapCanvas.id);
         }
 
         /* Fetch real fleet data */

@@ -10,9 +10,9 @@ const Settings = (() => {
     /* Default settings — no fake data */
     const defaults = {
         profile: {
-            name: '',
-            email: '',
-            role: 'Admin',
+            name: 'Satish',
+            email: 'admin@omniroute.ai',
+            role: 'System Administrator',
         },
         appearance: {
             theme: 'dark',
@@ -24,8 +24,8 @@ const Settings = (() => {
             emailReports: false,
         },
         api: {
-            baseUrl: '',
-            apiKey: '',
+            baseUrl: 'http://localhost:8000',
+            apiKey: 'omni_dev_root_key_2026',
         },
     };
 
@@ -188,8 +188,8 @@ const Settings = (() => {
       </div>
       <div class="settings-field">
         <label class="settings-field__label" for="settings-api-url">API Base URL</label>
-        <input class="settings-input settings-input--mono" id="settings-api-url" type="url" value="${sanitize(api.baseUrl)}" placeholder="https://api.omniroute.ai/v1">
-        <span class="settings-field__hint">Your FastAPI backend URL</span>
+        <input class="settings-input settings-input--mono" id="settings-api-url" type="url" value="${sanitize(api.baseUrl)}" placeholder="http://localhost:8000">
+        <span class="settings-field__hint">Your FastAPI backend URL (e.g., http://localhost:8000)</span>
       </div>
       <div class="settings-field">
         <label class="settings-field__label" for="settings-api-key">API Key</label>

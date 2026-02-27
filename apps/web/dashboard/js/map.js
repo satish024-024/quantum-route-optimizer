@@ -6,28 +6,29 @@
 const MapRenderer = (() => {
     let map = null;
 
-    function init() {
-        const mapEl = document.getElementById('map-canvas');
+    function init(elementId = 'map-canvas') {
+        const mapEl = document.getElementById(elementId);
         if (!mapEl) return;
 
         // Clear any existing content in the div, just in case
         mapEl.innerHTML = '';
 
         // Initialize Leaflet Map
-        // We set zoomControl to false so we can wire up custom buttons if needed,
-        // but default zoom control is also fine. Let's disable defaults to match the custom UI.
-        map = L.map('map-canvas', {
+        map = L.map(elementId, {
             zoomControl: false,
             attributionControl: false
         }).setView([28.6139, 77.2090], 12); // Default to New Delhi, India
 
-        // Attempt to get user's real location using IP Geolocation (works perfectly on file:/// protocol without permission popups)
+        // Attempt to get user's real location using IP Geolocation
         fetch('https://get.geojs.io/v1/ip/geo.json')
             .then(response => response.json())
             .then(data => {
                 if (map && data.latitude && data.longitude) {
                     const lat = parseFloat(data.latitude);
                     const lng = parseFloat(data.longitude);
+                    const city = data.city || 'Unknown City';
+                    const region = data.region || 'Unknown Region';
+
                     map.setView([lat, lng], 13);
 
                     // Add a glowing pulsating marker for the user's real location
@@ -39,7 +40,7 @@ const MapRenderer = (() => {
                     });
 
                     L.marker([lat, lng], { icon: userIcon }).addTo(map)
-                        .bindPopup(`<div style="color: #000; font-family: Inter, sans-serif;"><b>Real-Time Location</b><br>${data.city}, ${data.region}</div>`)
+                        .bindPopup(`<div style="color: #000; font-family: Inter, sans-serif;"><b>Real-Time Location</b><br>${city}, ${region}</div>`)
                         .openPopup();
                 }
             })
