@@ -98,6 +98,31 @@ const Fleet = (() => {
         renderTable();
       });
     });
+
+    const addBtn = document.getElementById('btn-add-vehicle');
+    if (addBtn) {
+      addBtn.addEventListener('click', () => {
+        const id = 'VH-' + Math.floor(1000 + Math.random() * 9000);
+        const types = ['Heavy Truck', 'Medium Truck', 'Light Van'];
+        const drivers = ['Ravi Kumar', 'Anita Singh', 'Suresh Raina', 'Priya Sharma'];
+        const type = types[Math.floor(Math.random() * types.length)];
+
+        Store.addVehicle({
+          id: id,
+          type: type,
+          plate: 'DL ' + Math.floor(10 + Math.random() * 89) + ' AB ' + Math.floor(1000 + Math.random() * 8999),
+          driver: drivers[Math.floor(Math.random() * drivers.length)],
+          status: 'idle',
+          fuel: 100,
+          mileage: Math.floor(5000 + Math.random() * 20000),
+          route: '—',
+          lastSeen: 'Just now'
+        });
+
+        renderSummary();
+        renderTable();
+      });
+    }
   }
 
   /* ── Table Rendering ── */

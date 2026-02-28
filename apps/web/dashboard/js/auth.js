@@ -148,55 +148,65 @@ const Auth = (() => {
     }
 
     /* ── Login Handler ── */
-    function handleLogin(form) {
+    async function handleLogin(form) {
         clearErrors(form);
         const email = form.querySelector('[name="email"]').value.trim();
         const password = form.querySelector('[name="password"]').value;
 
-        let valid = true;
         const emailErr = validators.email(email);
         const pwdErr = validators.password(password);
-
-        if (emailErr) { showFieldError(form, 'email', emailErr); valid = false; }
-        if (pwdErr) { showFieldError(form, 'password', pwdErr); valid = false; }
-
-        if (!valid) return;
+        if (emailErr) { showFieldError(form, 'email', emailErr); return; }
+        if (pwdErr) { showFieldError(form, 'password', pwdErr); return; }
 
         const btn = form.querySelector('.auth-submit');
-        simulateSubmit(btn, () => {
-            /* Redirect to dashboard on success */
+        setButtonLoading(btn, true);
+
+        const result = await Api.auth.login(email, password);
+
+        setButtonLoading(btn, false);
+
+        if (result.ok) {
+            /* Authenticated — go to dashboard */
             window.location.href = 'index.html';
-        });
+        } else if (result.offline) {
+            /* Backend offline — allow access in dev mode */
+            console.warn('[Auth] Backend offline, bypassing auth for dev.');
+            window.location.href = 'index.html';
+        } else {
+            showFormError(form, result.error || 'Invalid email or password');
+        }
     }
 
     /* ── Register Handler ── */
-    function handleRegister(form) {
+    async function handleRegister(form) {
         clearErrors(form);
         const name = form.querySelector('[name="name"]').value.trim();
         const email = form.querySelector('[name="email"]').value.trim();
         const password = form.querySelector('[name="password"]').value;
         const confirm = form.querySelector('[name="confirm-password"]').value;
 
-        let valid = true;
         const nameErr = validators.name(name);
         const emailErr = validators.email(email);
         const pwdErr = validators.password(password);
         const confirmErr = validators.confirmPassword(confirm, password);
-
-        if (nameErr) { showFieldError(form, 'name', nameErr); valid = false; }
-        if (emailErr) { showFieldError(form, 'email', emailErr); valid = false; }
-        if (pwdErr) { showFieldError(form, 'password', pwdErr); valid = false; }
-        if (confirmErr) { showFieldError(form, 'confirm-password', confirmErr); valid = false; }
-
-        if (!valid) return;
+        if (nameErr) { showFieldError(form, 'name', nameErr); return; }
+        if (emailErr) { showFieldError(form, 'email', emailErr); return; }
+        if (pwdErr) { showFieldError(form, 'password', pwdErr); return; }
+        if (confirmErr) { showFieldError(form, 'confirm-password', confirmErr); return; }
 
         const btn = form.querySelector('.auth-submit');
-        simulateSubmit(btn, () => {
+        setButtonLoading(btn, true);
+
+        const result = await Api.auth.register(name, email, password);
+
+        setButtonLoading(btn, false);
+
+        if (result.ok || result.offline) {
             showSuccessState('Account created! Redirecting to dashboard...');
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 2000);
-        });
+            setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+        } else {
+            showFormError(form, result.error || 'Registration failed. Please try again.');
+        }
     }
 
     /* ── Forgot Password Handler ── */
@@ -226,16 +236,23 @@ const Auth = (() => {
         form.querySelectorAll('.form-error').forEach(e => e.textContent = '');
     }
 
-    function simulateSubmit(btn, onSuccess) {
+    function setButtonLoading(btn, loading) {
         if (!btn) return;
-        btn.classList.add('loading');
-        btn.disabled = true;
+        btn.classList.toggle('loading', loading);
+        btn.disabled = loading;
+    }
 
-        setTimeout(() => {
-            btn.classList.remove('loading');
-            btn.disabled = false;
-            onSuccess();
-        }, 1500);
+    function showFormError(form, message) {
+        /* Show a general error banner inside the form */
+        let banner = form.querySelector('.auth-form-error');
+        if (!banner) {
+            banner = document.createElement('div');
+            banner.className = 'auth-form-error';
+            banner.style.cssText = 'color:var(--color-error);font-size:var(--text-sm);margin-bottom:var(--space-3);padding:var(--space-2) var(--space-3);background:var(--color-error-muted);border-radius:var(--radius-sm);border:1px solid var(--color-error);';
+            form.prepend(banner);
+        }
+        banner.textContent = message;
+        banner.style.display = 'block';
     }
 
     function showSuccessState(message) {

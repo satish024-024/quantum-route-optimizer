@@ -31,14 +31,20 @@ const Drivers = (() => {
 
         if (els.btnAssign) {
             els.btnAssign.addEventListener('click', () => {
-                const btn = els.btnAssign;
-                const originalText = btn.innerHTML;
-                btn.innerHTML = 'Connecting to Onboarding API...';
-                btn.disabled = true;
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                    btn.disabled = false;
-                }, 1500);
+                const names = ['Arjun Mehra', 'Sanjay Dutt', 'Meera Iyer', 'Karan Johar', 'Sunita Rao'];
+                const name = names[Math.floor(Math.random() * names.length)];
+                const id = 'DRV-' + Math.floor(100 + Math.random() * 899);
+
+                Store.addDriver({
+                    id: id,
+                    name: name,
+                    status: 'Off Duty',
+                    vehicleId: null,
+                    rating: (4 + Math.random()).toFixed(1),
+                    phone: '+91 98' + Math.floor(10000000 + Math.random() * 89999999)
+                });
+
+                render();
             });
         }
 

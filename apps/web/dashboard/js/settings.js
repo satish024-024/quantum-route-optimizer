@@ -212,25 +212,32 @@ const Settings = (() => {
                 return;
             }
 
+            /* Save URL temporarily so Api.getBaseUrl() picks it up */
+            const prev = current.api.baseUrl;
+            current.api.baseUrl = url;
+            save();
+
             btn.textContent = 'Testing...';
             btn.disabled = true;
 
-            try {
-                const res = await fetch(url + '/health', {
-                    method: 'GET',
-                    signal: AbortSignal.timeout(5000),
-                });
+            const result = typeof Api !== 'undefined'
+                ? await Api.health.check()
+                : await fetch(url + '/health', { signal: AbortSignal.timeout(5000) })
+                    .then(r => ({ ok: r.ok }))
+                    .catch(() => ({ ok: false, offline: true }));
 
-                if (res.ok) {
-                    btn.textContent = '✓ Connected';
-                    btn.style.color = 'var(--color-success)';
-                } else {
-                    btn.textContent = '✗ Failed (' + res.status + ')';
-                    btn.style.color = 'var(--color-error)';
-                }
-            } catch (e) {
-                btn.textContent = '✗ Unreachable';
+            if (result.ok) {
+                btn.textContent = '✓ Connected';
+                btn.style.color = 'var(--color-success)';
+            } else if (result.offline) {
+                btn.textContent = '✗ Offline';
+                btn.style.color = 'var(--color-warning)';
+            } else {
+                btn.textContent = '✗ Failed';
                 btn.style.color = 'var(--color-error)';
+                /* Restore old URL if test failed */
+                current.api.baseUrl = prev;
+                save();
             }
 
             btn.disabled = false;

@@ -6,7 +6,7 @@
 const MapRenderer = (() => {
     let map = null;
 
-    function init(elementId = 'map-canvas') {
+    function init(elementId = 'map-canvas', onClick = null) {
         const mapEl = document.getElementById(elementId);
         if (!mapEl) return;
 
@@ -18,6 +18,13 @@ const MapRenderer = (() => {
             zoomControl: false,
             attributionControl: false
         }).setView([28.6139, 77.2090], 12); // Default to New Delhi, India
+
+        // Register click listener
+        if (onClick) {
+            map.on('click', (e) => {
+                onClick(e.latlng.lat, e.latlng.lng);
+            });
+        }
 
         // Attempt to get user's real location using IP Geolocation
         fetch('https://get.geojs.io/v1/ip/geo.json')
@@ -112,13 +119,43 @@ const MapRenderer = (() => {
         }
     }
 
+    let markers = [];
+
+    function clearMarkers() {
+        markers.forEach(m => map.removeLayer(m));
+        markers = [];
+    }
+
+    function drawMarkers(stops) {
+        if (!map) return;
+        clearMarkers();
+
+        stops.forEach((stop, i) => {
+            if (stop.lat && stop.lng) {
+                const isDepot = stop.type === 'depot';
+                const marker = L.marker([stop.lat, stop.lng], {
+                    icon: L.divIcon({
+                        className: 'custom-stop-marker',
+                        html: `<div style="width: 24px; height: 24px; background: ${isDepot ? '#F59E0B' : '#2563EB'}; border-radius: 50%; border: 2px solid white; color: white; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.3);">${isDepot ? 'D' : (i + 1)}</div>`,
+                        iconSize: [24, 24],
+                        iconAnchor: [12, 12]
+                    })
+                }).addTo(map)
+                    .bindPopup(`<div style="color: #000;"><b>${stop.name}</b><br>${stop.address}</div>`);
+
+                markers.push(marker);
+            }
+        });
+    }
+
     function destroy() {
         if (map) {
+            clearMarkers();
             map.remove();
             map = null;
         }
     }
 
     // Expose for external integration
-    return { init, destroy, getMap: () => map };
+    return { init, destroy, getMap: () => map, drawMarkers, clearMarkers };
 })();

@@ -170,31 +170,166 @@ const Store = (() => {
        the API.
        ───────────────────────────────────────── */
 
-    function addStop(name, address) {
-        optimizer.stops.push({ name, address });
-        /* TODO: POST /api/v1/optimizer/stops */
+    /* ─────────────────────────────────────────
+       PERSISTENCE LOGIC
+       Allows testing across page reloads before
+       backend is fully integrated.
+       ───────────────────────────────────────── */
+    const STORAGE_KEY = 'omniroute_store';
+
+    function save() {
+        try {
+            const data = { dashboard, fleet, drivers, tracking, analytics, optimizer };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+        } catch (e) { }
+    }
+
+    function load() {
+        try {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                const data = JSON.parse(stored);
+                Object.assign(dashboard, data.dashboard || {});
+                Object.assign(fleet, data.fleet || {});
+                Object.assign(drivers, data.drivers || {});
+                Object.assign(tracking, data.tracking || {});
+                Object.assign(analytics, data.analytics || {});
+                Object.assign(optimizer, data.optimizer || {});
+            }
+        } catch (e) { }
+    }
+
+    /* Initialize store */
+    load();
+
+    function addStop(name, address, lat = null, lng = null) {
+        optimizer.stops.push({ name, address, lat, lng });
+        dashboard.stats.activeRoutes.value = optimizer.stops.length;
+        save();
+    }
+
+    function addStopWithCoords(lat, lng) {
+        const num = optimizer.stops.length + 1;
+        const isFirst = optimizer.stops.length === 0;
+        const name = isFirst ? 'Main Depot' : `Stop ${num}`;
+        const address = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+        const type = isFirst ? 'depot' : 'stop';
+
+        optimizer.stops.push({ name, address, lat, lng, type });
+        dashboard.stats.activeRoutes.value = optimizer.stops.length;
+        save();
     }
 
     function removeStop(index) {
         optimizer.stops.splice(index, 1);
-        /* TODO: DELETE /api/v1/optimizer/stops/:id */
+        dashboard.stats.activeRoutes.value = optimizer.stops.length;
+        save();
     }
 
-    function addVehicle(vehicle) {
+    async function addVehicle(vehicle) {
+        /* Optimistic update — add to local state immediately */
         fleet.vehicles.push(vehicle);
-        /* TODO: POST /api/v1/fleet/vehicles */
+        dashboard.stats.fleetOnline.value = fleet.vehicles.filter(v => v.status === 'active' || v.status === 'idle').length;
+        dashboard.stats.fleetOnline.total = fleet.vehicles.length;
+        save();
+
+        /* Sync to backend in the background (non-blocking) */
+        if (typeof Api !== 'undefined') {
+            Api.vehicles.create({
+                vehicle_type: vehicle.type,
+                plate_number: vehicle.plate,
+                capacity_kg: vehicle.capacity_kg || 1000,
+                status: 'available',
+            }).then(result => {
+                if (result.ok && result.data?.id) {
+                    /* Update local record with the server-assigned ID */
+                    const idx = fleet.vehicles.findIndex(v => v.plate === vehicle.plate);
+                    if (idx !== -1) fleet.vehicles[idx]._id = result.data.id;
+                    save();
+                }
+            }).catch(() => { /* offline — already saved locally */ });
+        }
     }
 
     function updateConstraints(partial) {
         Object.assign(optimizer.constraints, partial);
+        save();
     }
+
+    function addDriver(driver) {
+        drivers.list.push(driver);
+        save();
+    }
+
+
+    /* ── API-backed Fetchers ──
+       Try backend first. If offline, return local state. */
+
+    async function fetchDashboard() {
+        if (typeof Api !== 'undefined') {
+            const result = await Api.health.check();
+            if (result.ok) {
+                /* Backend is alive — in future: fetch real stats */
+                /* For now: return local state (real stats endpoint TBD in Phase 5) */
+            }
+        }
+        return dashboard;
+    }
+
+    async function fetchFleet() {
+        if (typeof Api !== 'undefined') {
+            const result = await Api.vehicles.list();
+            if (result.ok && Array.isArray(result.data)) {
+                /* Map API response to local vehicle shape */
+                const apiVehicles = result.data.map(v => ({
+                    _id: v.id,
+                    id: v.plate_number || v.id.slice(0, 8).toUpperCase(),
+                    type: v.vehicle_type,
+                    plate: v.plate_number,
+                    driver: v.driver_name || 'Unassigned',
+                    status: v.status === 'available' ? 'idle' : v.status,
+                    fuel: v.fuel_percent || 100,
+                    mileage: v.mileage_km || 0,
+                    route: v.current_route || '—',
+                    lastSeen: v.last_location_at ? new Date(v.last_location_at).toLocaleTimeString() : 'Unknown',
+                }));
+
+                if (apiVehicles.length > 0) {
+                    fleet.vehicles = apiVehicles;
+                    dashboard.stats.fleetOnline.value = apiVehicles.filter(v => v.status !== 'offline').length;
+                    dashboard.stats.fleetOnline.total = apiVehicles.length;
+                    save();
+                }
+            }
+        }
+        return fleet;
+    }
+
+    async function fetchDrivers() {
+        /* TODO: wire to /api/v1/drivers once endpoint exists */
+        return drivers;
+    }
+
+    async function fetchTracking(vehicleId) {
+        if (vehicleId) tracking.activeVehicleId = vehicleId;
+        return tracking;
+    }
+
+    async function fetchAnalytics() {
+        return analytics;
+    }
+
+    async function fetchOptimizer() {
+        return optimizer;
+    }
+
 
 
     /* ─────────────────────────────────────────
        PUBLIC API
        ───────────────────────────────────────── */
     return {
-        /* Data access (read-only references) */
+        /* Data access */
         dashboard,
         fleet,
         drivers,
@@ -202,7 +337,7 @@ const Store = (() => {
         analytics,
         optimizer,
 
-        /* Async fetchers */
+        /* Async fetchers — try API, fall back to local state */
         fetchDashboard,
         fetchFleet,
         fetchDrivers,
@@ -212,9 +347,13 @@ const Store = (() => {
 
         /* Mutations */
         addStop,
+        addStopWithCoords,
         removeStop,
         addVehicle,
+        addDriver,
         updateConstraints,
+        save,
+        clear: () => { localStorage.removeItem(STORAGE_KEY); location.reload(); }
     };
 
 })();
