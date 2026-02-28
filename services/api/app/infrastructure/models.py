@@ -328,3 +328,26 @@ class AuditLog(Base):
     ip_address = Column(INET, nullable=True)
     user_agent = Column(Text, nullable=True)
     created_at = Column(DateTime(timezone=True), nullable=False, server_default=text("NOW()"))
+
+
+class DriverProfile(Base):
+    """Extended profile for users with role=driver."""
+    __tablename__ = "driver_profiles"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), unique=True, nullable=False)
+    workspace_id = Column(UUID(as_uuid=True), ForeignKey("workspaces.id", ondelete="CASCADE"), nullable=False)
+    phone = Column(Text, nullable=True)
+    license_number = Column(Text, nullable=True)
+    license_expiry = Column(DateTime(timezone=True), nullable=True)
+    rating = Column(Float, nullable=False, server_default=text("5.0"))
+    trips_completed = Column(Integer, nullable=False, server_default=text("0"))
+    is_available = Column(Boolean, nullable=False, server_default=text("true"))
+    current_vehicle_id = Column(UUID(as_uuid=True), ForeignKey("vehicles.id", ondelete="SET NULL"), nullable=True)
+    metadata_ = Column("metadata", JSONB, nullable=False, server_default=text("'{}'::jsonb"))
+    created_at = Column(DateTime(timezone=True), nullable=False, server_default=text("NOW()"))
+    updated_at = Column(DateTime(timezone=True), nullable=False, server_default=text("NOW()"))
+    deleted_at = Column(DateTime(timezone=True), nullable=True)
+
+    user = relationship("User", foreign_keys=[user_id])
+    vehicle = relationship("Vehicle", foreign_keys=[current_vehicle_id])

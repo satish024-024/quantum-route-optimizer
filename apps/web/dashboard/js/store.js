@@ -306,7 +306,26 @@ const Store = (() => {
     }
 
     async function fetchDrivers() {
-        /* TODO: wire to /api/v1/drivers once endpoint exists */
+        if (typeof Api !== 'undefined') {
+            const result = await Api.drivers.list();
+            if (result.ok && Array.isArray(result.data)) {
+                const apiDrivers = result.data.map(d => ({
+                    _id: d.id,
+                    id: d.user_id,
+                    name: d.full_name,
+                    status: d.is_available ? 'available' : 'driving',
+                    rating: d.rating || 5.0,
+                    phone: d.phone || '—',
+                    trips: d.trips_completed || 0,
+                    license: d.license_number || '—',
+                }));
+
+                if (apiDrivers.length > 0) {
+                    drivers.list = apiDrivers;
+                    save();
+                }
+            }
+        }
         return drivers;
     }
 

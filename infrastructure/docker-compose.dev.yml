@@ -1,6 +1,21 @@
+# OmniRoute AI — Development Environment
+#
+# Starts all infrastructure + the API with hot-reload.
+# Usage: docker compose -f infrastructure/docker-compose.dev.yml up
+#
+# Services:
+#   postgres  → PostGIS 17 database
+#   redis     → Cache + session store
+#   api       → FastAPI with hot-reload (uvicorn --reload)
+#   kafka     → Event streaming (optional for MVP)
+#   zookeeper → Required by Kafka
+
 services:
+
+  # ── PostgreSQL + PostGIS ─────────────────────────────────────
   postgres:
     image: postgis/postgis:17-3.5
+    restart: unless-stopped
     environment:
       POSTGRES_USER: omniroute
       POSTGRES_PASSWORD: omnipass
@@ -9,24 +24,85 @@ services:
       - "5432:5432"
     volumes:
       - omniroute-pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U omniroute -d omniroute"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
+  # ── Redis ────────────────────────────────────────────────────
   redis:
     image: redis:7.4-alpine
+    restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
       - omniroute-redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
+  # ── FastAPI — Core API Service ────────────────────────────────
+  api:
+    build:
+      context: ../services/api
+      dockerfile: Dockerfile
+      target: builder          # Use builder stage for dev (has gcc etc.)
+    image: omniroute-api:dev
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://omniroute:omnipass@postgres:5432/omniroute
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: dev-secret-change-in-production
+      JWT_ALGORITHM: HS256
+      JWT_ACCESS_EXPIRY_MINUTES: 15
+      JWT_REFRESH_EXPIRY_DAYS: 7
+      DEBUG: "true"
+      CORS_ORIGINS: '["http://localhost:3000","http://localhost:5500","http://127.0.0.1:5500"]'
+    volumes:
+      # Hot-reload: mount source so changes apply without rebuild
+      - ../services/api/app:/app/app
+      - ../services/api/migrations:/app/migrations
+    # Override CMD for dev: hot-reload Uvicorn (skip Alembic auto-run in compose)
+    command: >
+      sh -c "
+        echo 'Running migrations...' &&
+        alembic upgrade head &&
+        echo 'Starting API...' &&
+        uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      "
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  # ── Zookeeper (Kafka dependency) ─────────────────────────────
   zookeeper:
     image: confluentinc/cp-zookeeper:7.7.0
+    restart: unless-stopped
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "2181:2181"
+    profiles:
+      - kafka      # Only starts with: docker compose --profile kafka up
 
+  # ── Kafka ────────────────────────────────────────────────────
   kafka:
     image: confluentinc/cp-kafka:7.7.0
+    restart: unless-stopped
     depends_on:
       - zookeeper
     environment:
@@ -36,6 +112,9 @@ services:
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - "9092:9092"
+    profiles:
+      - kafka      # Only starts with: docker compose --profile kafka up
+
 
 volumes:
   omniroute-pg-data:

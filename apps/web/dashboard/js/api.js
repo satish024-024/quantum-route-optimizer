@@ -150,6 +150,21 @@ const Api = (() => {
 
 
     /* ════════════════════════════════════════
+       DRIVER ENDPOINTS
+       ════════════════════════════════════════ */
+    const drivers = {
+        list(availableOnly = false) {
+            const qs = availableOnly ? '?available_only=true' : '';
+            return get(`/api/v1/drivers${qs}`);
+        },
+        get(id) { return get(`/api/v1/drivers/${id}`); },
+        create(body) { return post('/api/v1/drivers', body); },
+        update(id, body) { return request('PATCH', `/api/v1/drivers/${id}`, body); },
+        remove(id) { return del(`/api/v1/drivers/${id}`); },
+    };
+
+
+    /* ════════════════════════════════════════
        ROUTES ENDPOINTS
        ════════════════════════════════════════ */
     const routes = {
@@ -188,6 +203,7 @@ const Api = (() => {
     return {
         auth,
         vehicles,
+        drivers,
         routes,
         optimize,
         health,
